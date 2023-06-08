@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PlayerData: ScriptableObject
+public class PlayerData : ScriptableObject
 {
-    internal PlayerBoardData playerBoardData;
-    internal BattleBoardData battleBoardData;
+    internal BoardData playerMovesData;
+    internal PlayerBattleshipsData playerBattleshipsData;
+    internal uint score = 0;
 
     private void Awake()
     {
-        playerBoardData = CreateInstance<PlayerBoardData>();
-        battleBoardData = CreateInstance<BattleBoardData>();
-        playerBoardData.PrintBoard();
+        // create ships
+        playerBattleshipsData = CreateInstance<PlayerBattleshipsData>();
+        // initialize move board
+        playerMovesData = CreateInstance<BoardData>();
+    }
+
+    internal bool CheckGameOver()
+    {
+        return !playerBattleshipsData.HasBattleshipsLeft();
+    }
+
+    internal void UpdateScore(uint scoreToAdd)
+    {
+        score += scoreToAdd;
     }
 }

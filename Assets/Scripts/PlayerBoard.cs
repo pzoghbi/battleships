@@ -1,36 +1,52 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBoard : MonoBehaviour
+public class PlayerBoard : Board
 {
-    [SerializeField] private Transform gridRoot;
-    private BoardData boardDataRef;
-    private List<GameObject> ships = new List<GameObject>();
+    private List<Battleship> battleships = new List<Battleship>();
+    private Dictionary<BattleshipData, Battleship> placedBattleships = new Dictionary<BattleshipData, Battleship>();
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
+        CreateBattleships();
     }
 
-    internal void LoadBoardData(PlayerBoardData pbData)
+    private void CreateBattleships()
     {
-        boardDataRef = pbData;
-
-        ships.ForEach(ship => Destroy(ship.gameObject)); // todo 
-
-        pbData.ships.ForEach(ship =>
+        BattleManager.instance.battleSettings.battleshipsBlueprintData.ForEach(battleshipData =>
         {
-            ship.shipParts.ForEach(part =>
-            {
-                //boardDataRef.grid[(byte) part.gridPosition.x, (byte) part.gridPosition.y] =
-                //    part.isHit
-                //        ? (int) BoardData.BoardTileType.Hit
-                //        : (int) BoardData.BoardTileType.Ship;
-            });
+            var battleship = Instantiate(battleshipData.prefab, boardRoot);
+            battleship.prefab = battleshipData.prefab;
+            battleships.Add(battleship);
+        });
+    }
 
-            // todo 
-            var battleship = Instantiate(ship.prefab, gridRoot);
-            battleship.battleshipData = ship;
-            ships.Add(battleship.gameObject);
+    internal void LoadBoardData(BoardData playerMovesBoardData, PlayerBattleshipsData playerBattleshipsData)
+    {
+        UpdateBattleshipsPosition(playerBattleshipsData);
+        LoadBoardData(playerMovesBoardData);
+    }
+
+    private void UpdateBattleshipsPosition(PlayerBattleshipsData playerBattleshipsData)
+    {
+        // place battleship objects on the board
+        placedBattleships.Clear();
+
+        playerBattleshipsData.battleshipsData.ForEach(battleshipData =>
+        {
+            battleships.ForEach(battleship =>
+            {
+                if (!placedBattleships.ContainsKey(battleshipData)
+                && !placedBattleships.ContainsValue(battleship))
+                {
+                    if (battleship.prefab == battleshipData.prefab)
+                    {
+                        battleship.SetBattleshipPosition(battleshipData);
+                        placedBattleships.Add(battleshipData, battleship);
+                    }
+                }
+            });
         });
     }
 }

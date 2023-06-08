@@ -11,27 +11,37 @@ public class BoardData : ScriptableObject
         Ship,
         Miss,
         Hit,
-        Normal
+        Normal,
+        Flag
+    }
+
+    private void Awake()
+    {
+        InitializeBoard();
     }
 
     internal void InitializeBoard()
     {
         grid = new int[boardSize, boardSize];
 
-        for (byte row = 0; row < boardSize; row++)
+        ClearBoard();
+    }
+
+    internal void ClearBoard()
+    {
+        WalkGrid((byte col, byte row) =>
         {
-            for (byte column = 0; column < boardSize; column++)
-            {
-                grid[column, row] = (int) BoardTileType.Empty;
-            }
-        }
+            grid[col, row] = (int) BoardTileType.Empty;
+        });
     }
 
     internal delegate void WalkAction(byte col, byte row);
+
     internal static void WalkGrid(WalkAction WalkAction)
     {
-        for(byte row = 0; row < boardSize; row++) {
-            for(byte col = 0; col < boardSize; col++)
+        for (byte row = 0; row < boardSize; row++)
+        {
+            for (byte col = 0; col < boardSize; col++)
             {
                 WalkAction(col, row);
             }

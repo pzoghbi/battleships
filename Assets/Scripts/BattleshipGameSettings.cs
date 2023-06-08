@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Battleship Settings", menuName = "Battleships/Game Settings")]
+[CreateAssetMenu(fileName = "New Battleship Game Settings", menuName = "Battleships/Game Settings")]
 public class BattleshipGameSettings : ScriptableObject
 {
-    public List<BattleshipData> ships;
+    public List<BattleshipData> battleshipsBlueprintData;
 }

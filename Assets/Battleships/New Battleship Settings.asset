@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99059baae25461847943ee1bdd397cab, type: 3}
   m_Name: New Battleship Settings
   m_EditorClassIdentifier: 
-  ships:
+  battleshipsBlueprintData:
   - {fileID: 11400000, guid: 2817980e2f5c26243b7d22f82d66b59d, type: 2}
   - {fileID: 11400000, guid: 2817980e2f5c26243b7d22f82d66b59d, type: 2}
   - {fileID: 11400000, guid: d0464057cadbcc0459f434efbdcc30f6, type: 2}
