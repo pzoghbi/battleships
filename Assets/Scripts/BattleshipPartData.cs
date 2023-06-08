@@ -2,7 +2,7 @@
 
 public class BattleshipPartData : ScriptableObject
 {
-    public Vector2 gridPosition;
+    public Vector2Int gridPosition;
     public BattleshipData battleshipData;
     public bool isHit = false;
 }

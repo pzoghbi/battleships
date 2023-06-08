@@ -47,4 +47,9 @@ public class BoardData : ScriptableObject
             }
         }
     }
+
+    internal static byte ClampToBoardSize(int value)
+    {
+        return (byte) Mathf.Clamp(value, 0, boardSize - 1);
+    }
 }
