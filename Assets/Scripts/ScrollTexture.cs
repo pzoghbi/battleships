@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class ScrollTexture : MonoBehaviour
 {
+    [SerializeField] private Vector2 scrollOffset = new Vector2(0.001f, 0.001f);
     private new Renderer renderer;
     private Material material;
-    [SerializeField] private Vector2 scrollOffset = new Vector2(0.001f, 0.001f);
+    private const string _detailAlbedoMapName = "_DetailAlbedoMap";
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,6 @@ public class ScrollTexture : MonoBehaviour
     void Update()
     {
         material.mainTextureOffset += scrollOffset;
-        material.SetTextureOffset("_DetailAlbedoMap", material.mainTextureOffset);
+        material.SetTextureOffset(_detailAlbedoMapName, material.mainTextureOffset);
     }
 }
