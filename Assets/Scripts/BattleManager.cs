@@ -1,14 +1,17 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
     internal static BattleManager instance;
+    [SerializeField] CinemachineImpulseSource impulseSource;
+    [SerializeField] private DisplayGameMessage displayGameMessage;
     [SerializeField] internal BattleshipGameSettings battleSettings;
     [SerializeField] internal PlayerBoard playerBoard;
     [SerializeField] internal Board battleBoard;
-    [SerializeField] CinemachineImpulseSource impulseSource;
+    [SerializeField] string[] destroyShipTexts ;
 
     internal int turn = 0;
     internal bool isGameOver = false;
@@ -16,7 +19,19 @@ public class BattleManager : MonoBehaviour
     private PlayerData[] players;
     private PlayerData ActivePlayer => players[(turn + 1) % playerCount];
     private PlayerData OtherPlayer => players[turn % playerCount];
+    private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
+    internal bool AllowInput {
+        get => !isGameOver && allowInput;
+        private set => allowInput = value;
+    }
+
+    private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
+
+    private bool allowInput = false;
+    private float delayBetweenTurns = 2;
+    private byte currentPlayerIndex = 0;
     private const byte playerCount = 2;
+    private Coroutine endTurnCoroutine;
 
     // Start is called before the first frame update
     void Awake()
@@ -35,13 +50,15 @@ public class BattleManager : MonoBehaviour
         players = new PlayerData[playerCount];
 
         for (byte playerIndex = 0; playerIndex < playerCount; playerIndex++)
-        {
             players[playerIndex] = ScriptableObject.CreateInstance<PlayerData>();
-        }
     }
 
     internal void ProcessTileSelection(Vector2Int gridPosition)
     {
+        if (!AllowInput) return;
+
+        bool endTurn = true;
+
         var targetBattleshipPartData = CheckForTargetsHit(gridPosition);
 
         if (targetBattleshipPartData)
@@ -51,35 +68,51 @@ public class BattleManager : MonoBehaviour
             if (targetBattleshipPartData.battleshipData.IsWrecked)
             {
                 targetBattleshipPartData.battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
+                displayGameMessage.ShowText(DestroyShipText);
             }
 
-            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] = (int) BoardData.BoardTileType.Hit;
+            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
+                = (int) BoardData.BoardTileType.Hit;
 
             if (OtherPlayer.CheckGameOver())
             {
-                // Handle game over
-                Debug.Log("Game over for player: " + turn % 2);
+                displayGameMessage.ShowText(TurnText);
+                isGameOver = true;
             }
 
-            // play FX
             ShakeCamera();
-            // play explosion particles
+            var tileId = battleBoard.tileBoardData.grid[gridPosition.x, gridPosition.y];
+            battleBoard.boardTiles[tileId].PlayExplosionParticles();
             // play sound
 
-            UpdateBoards();
-            return;
+            endTurn = false;
         }
         else
         {
-            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] = (int) BoardData.BoardTileType.Miss;
+            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
+                = (int) BoardData.BoardTileType.Miss;
         }
 
+        UpdateBoards();
+
+        if (endTurn)
+        {
+            if (endTurnCoroutine != null) StopCoroutine(endTurnCoroutine);
+            StartCoroutine(AdvanceTurnRoutine());
+        }
+    }
+
+    private IEnumerator AdvanceTurnRoutine()
+    {
+        AllowInput = false;
+        yield return new WaitForSeconds(delayBetweenTurns);
         AdvanceTurn();
     }
 
     private BattleshipPartData CheckForTargetsHit(Vector2Int gridPosition)
     {
-        // todo this can be improved by caching battleshipparts instance ids in separate grid + dictionary to access those
+        // todo this can be improved by caching battleshipparts
+        // instance ids in separate grid + dictionary to access those
         var opponentBattleships = OtherPlayer.playerBattleshipsData.battleshipsData;
         foreach (var battleshipData in opponentBattleships)
         {
@@ -98,6 +131,9 @@ public class BattleManager : MonoBehaviour
     private void AdvanceTurn()
     {
         turn += 1;
+        AllowInput = true;
+        currentPlayerIndex = (byte) ((turn + 1) % 2);
+        displayGameMessage.ShowText("Player " + (currentPlayerIndex + 1).ToString() + "'s turn");
         UpdateBoards();
     }
 
