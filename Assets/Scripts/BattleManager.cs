@@ -30,7 +30,8 @@ public class BattleManager : MonoBehaviour
     private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
     private bool allowInput = true;
     private float delayBetweenTurns = 2;
-    private float gameOverDelay = 1;
+    private float gameOverDelay = 2;
+    private float restartGameDelay = 3;
     private byte currentPlayerIndex = 0;
     private const byte playerCount = 2;
 
@@ -120,6 +121,8 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(gameOverDelay);
         displayGameMessage.ShowText(WinText);
         AudioManager.Play(AudioManager.instance.victorySound);
+        yield return new WaitForSeconds(restartGameDelay);
+        RestartBattle();
     }
 
     private BattleshipPartData CheckForTargetsHit(Vector2Int gridPosition)
@@ -160,7 +163,8 @@ public class BattleManager : MonoBehaviour
 
     internal void RestartBattle()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (LevelManager.instance)
+            LevelManager.instance.LoadMainMenu();
     }
 
     private void ShakeCamera()
