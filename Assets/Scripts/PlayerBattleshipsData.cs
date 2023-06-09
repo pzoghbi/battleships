@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerBattleshipsData : ScriptableObject
 {
     internal List<BattleshipData> battleshipsData = new List<BattleshipData>();
+    internal bool HasBattleshipsLeft => battleshipsData.Any(battleship => !battleship.IsWrecked);
 
     private void Awake()
     {
@@ -20,19 +22,4 @@ public class PlayerBattleshipsData : ScriptableObject
         }
     }
 
-    internal bool HasBattleshipsLeft()
-    {
-        bool hasBattleshipsLeft = false;
-
-        foreach (var battleshipData in battleshipsData)
-        {
-            if (!battleshipData.IsWrecked)
-            {
-                hasBattleshipsLeft = true;
-                break;
-            }
-        }
-
-        return hasBattleshipsLeft;
-    }
 }

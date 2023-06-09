@@ -16,7 +16,7 @@ public class PlayerData : ScriptableObject
 
     internal bool CheckGameOver()
     {
-        return !playerBattleshipsData.HasBattleshipsLeft();
+        return !playerBattleshipsData.HasBattleshipsLeft;
     }
 
     internal void UpdateScore(uint scoreToAdd)

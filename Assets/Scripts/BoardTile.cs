@@ -56,15 +56,12 @@ public class BoardTile : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (!interactable) return;
+        if (!interactable 
+            || !IsClickableTileType()
+            || !BattleManager.instance.AllowInput
+            ) return;
 
-        if (tileType != (int) BoardTileType.Hit
-            && tileType != (int) BoardTileType.Miss
-            && tileType != (int) BoardTileType.Flag
-        )
-        {
-            meshRenderer.material = highlightMaterial;
-        }
+        meshRenderer.material = highlightMaterial;
     }
 
     private void OnMouseExit()
@@ -89,14 +86,29 @@ public class BoardTile : MonoBehaviour
 
     private void PropagateClick(Vector2Int gridPosition)
     {
-        if (tileType == (int) BoardTileType.Empty)
+        if (IsClickableTileType())
         {
             BattleManager.instance.ProcessTileSelection(gridPosition);
-            PlayVFX();
         }
     }
 
-    internal void PlayVFX()
+    private bool IsClickableTileType()
+    {
+        switch((BoardTileType) tileType)
+        {
+            case BoardTileType.Empty:
+                return true;
+
+            case BoardTileType.Hit:
+            case BoardTileType.Miss:
+            case BoardTileType.Flag:
+            case BoardTileType.Ship:
+            default:
+                return false;
+        }
+    }
+
+    internal void PlayExplosionParticles()
     {
         explosionParticles.Play();
     }
