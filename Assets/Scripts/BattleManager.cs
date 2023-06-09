@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class BattleManager : MonoBehaviour
+public partial class BattleManager : MonoBehaviour
 {
     [SerializeField] internal BattleshipGameSettings battleSettings;
     [SerializeField] internal PlayerBoard playerBoard;
@@ -57,6 +57,11 @@ public class BattleManager : MonoBehaviour
             players[playerIndex] = ScriptableObject.CreateInstance<PlayerData>();
     }
 
+    public void ProcessPlayerAction(IPlayerAction playerAction)
+    {
+        playerAction.Execute();
+    }
+    
     internal void ProcessTileSelection(Vector2Int gridPosition)
     {
         if (!AllowInput) return;

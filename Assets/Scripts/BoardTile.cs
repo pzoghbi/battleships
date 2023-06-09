@@ -88,7 +88,8 @@ public class BoardTile : MonoBehaviour
     {
         if (IsClickableTileType())
         {
-            BattleManager.instance.ProcessTileSelection(gridPosition);
+            var playerAction = new GridSelectionPlayerAction(gridPosition);
+            BattleManager.instance.ProcessPlayerAction(playerAction);
         }
     }
 
