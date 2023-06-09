@@ -10,7 +10,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] internal Board battleBoard;
 
     internal static BattleManager instance;
-    internal AudioSource audioSource;
     internal int turn = 0;
     internal bool isGameOver = false;
     internal bool AllowInput {
@@ -20,12 +19,6 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] private DisplayGameMessage displayGameMessage;
     [SerializeField] private string[] destroyShipTexts;
-    [Header("Sound FX")]
-    [SerializeField] private AudioClip hitTargetSound;
-    [SerializeField] private AudioClip missTargetSound;
-    [SerializeField] private AudioClip sunkTargetSound;
-    [SerializeField] private AudioClip victorySound;
-
 
     private CinemachineImpulseSource impulseSource;
     private Coroutine endTurnCoroutine;
@@ -45,7 +38,6 @@ public class BattleManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        audioSource = GetComponent<AudioSource>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
@@ -53,7 +45,7 @@ public class BattleManager : MonoBehaviour
     {
         InitializePlayers();
         AdvanceTurn();
-        audioSource.Play();
+        AudioManager.Play(AudioManager.instance.music);
     }
 
     private void InitializePlayers()
@@ -80,7 +72,7 @@ public class BattleManager : MonoBehaviour
             {
                 targetBattleshipPartData.battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
                 displayGameMessage.ShowText(DestroyShipText);
-                audioSource.PlayOneShot(sunkTargetSound);
+                AudioManager.Play(AudioManager.instance.sunkTargetSound);
             }
 
             ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
@@ -95,7 +87,7 @@ public class BattleManager : MonoBehaviour
             ShakeCamera();
             var tileId = battleBoard.tileBoardData.grid[gridPosition.x, gridPosition.y];
             battleBoard.boardTiles[tileId].PlayExplosionParticles();
-            audioSource.PlayOneShot(hitTargetSound);
+            AudioManager.Play(AudioManager.instance.hitTargetSound);
 
             endTurn = false;
         }
@@ -103,7 +95,7 @@ public class BattleManager : MonoBehaviour
         {
             ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
                 = (int) BoardData.BoardTileType.Miss;
-            audioSource.PlayOneShot(missTargetSound);
+            AudioManager.Play(AudioManager.instance.missTargetSound);
         }
 
         UpdateBoards();
@@ -127,7 +119,7 @@ public class BattleManager : MonoBehaviour
     {
         yield return new WaitForSeconds(gameOverDelay);
         displayGameMessage.ShowText(WinText);
-        audioSource.PlayOneShot(victorySound);
+        AudioManager.Play(AudioManager.instance.victorySound);
     }
 
     private BattleshipPartData CheckForTargetsHit(Vector2Int gridPosition)
