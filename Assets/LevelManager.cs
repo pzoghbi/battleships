@@ -30,7 +30,6 @@ public class LevelManager : MonoBehaviour
     {
         SceneManager.LoadScene(gameSceneName);
     }
-
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
