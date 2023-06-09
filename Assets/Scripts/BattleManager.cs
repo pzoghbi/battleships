@@ -10,6 +10,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] internal Board battleBoard;
 
     internal static BattleManager instance;
+    internal AudioSource audioSource;
     internal int turn = 0;
     internal bool isGameOver = false;
     internal bool AllowInput {
@@ -17,11 +18,16 @@ public class BattleManager : MonoBehaviour
         private set => allowInput = value;
     }
 
-    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private DisplayGameMessage displayGameMessage;
-    [SerializeField] string[] destroyShipTexts ;
+    [SerializeField] private string[] destroyShipTexts;
+    [Header("Sound FX")]
+    [SerializeField] private AudioClip hitTargetSound;
+    [SerializeField] private AudioClip missTargetSound;
+    [SerializeField] private AudioClip sunkTargetSound;
+    [SerializeField] private AudioClip victorySound;
 
 
+    private CinemachineImpulseSource impulseSource;
     private Coroutine endTurnCoroutine;
     private PlayerData[] players;
     private PlayerData ActivePlayer => players[(turn + 1) % playerCount];
@@ -31,6 +37,7 @@ public class BattleManager : MonoBehaviour
     private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
     private bool allowInput = true;
     private float delayBetweenTurns = 2;
+    private float gameOverDelay = 1;
     private byte currentPlayerIndex = 0;
     private const byte playerCount = 2;
 
@@ -38,12 +45,15 @@ public class BattleManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+        audioSource = GetComponent<AudioSource>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Start()
     {
         InitializePlayers();
         AdvanceTurn();
+        audioSource.Play();
     }
 
     private void InitializePlayers()
@@ -70,6 +80,7 @@ public class BattleManager : MonoBehaviour
             {
                 targetBattleshipPartData.battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
                 displayGameMessage.ShowText(DestroyShipText);
+                audioSource.PlayOneShot(sunkTargetSound);
             }
 
             ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
@@ -77,14 +88,14 @@ public class BattleManager : MonoBehaviour
 
             if (OtherPlayer.CheckGameOver())
             {
-                displayGameMessage.ShowText(WinText);
                 isGameOver = true;
+                StartCoroutine(GameOverRoutine());
             }
 
             ShakeCamera();
             var tileId = battleBoard.tileBoardData.grid[gridPosition.x, gridPosition.y];
             battleBoard.boardTiles[tileId].PlayExplosionParticles();
-            // play sound
+            audioSource.PlayOneShot(hitTargetSound);
 
             endTurn = false;
         }
@@ -92,6 +103,7 @@ public class BattleManager : MonoBehaviour
         {
             ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
                 = (int) BoardData.BoardTileType.Miss;
+            audioSource.PlayOneShot(missTargetSound);
         }
 
         UpdateBoards();
@@ -109,6 +121,13 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(delayBetweenTurns);
         AllowInput = true;
         AdvanceTurn();
+    }
+
+    private IEnumerator GameOverRoutine()
+    {
+        yield return new WaitForSeconds(gameOverDelay);
+        displayGameMessage.ShowText(WinText);
+        audioSource.PlayOneShot(victorySound);
     }
 
     private BattleshipPartData CheckForTargetsHit(Vector2Int gridPosition)
