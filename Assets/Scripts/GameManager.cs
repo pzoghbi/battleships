@@ -1,5 +1,6 @@
 using Cinemachine;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,12 +29,12 @@ public class GameManager : MonoBehaviour
     private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
     private string WinText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
     private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
-    private bool allowInput = true;
     private float delayBetweenTurns = 2;
     private float gameOverDelay = 2;
     private float restartGameDelay = 3;
     private byte currentPlayerIndex = 0;
     private const byte playerCount = 2;
+    private bool allowInput = true;
 
     // Start is called before the first frame update
     void Awake()
@@ -66,23 +67,16 @@ public class GameManager : MonoBehaviour
     {
         if (!AllowInput) return;
 
-        bool endTurn = true;
+        var hitBattleshipPartData = CheckForTargetsHit(gridPosition);
 
-        var targetBattleshipPartData = CheckForTargetsHit(gridPosition);
-
-        if (targetBattleshipPartData)
+        if (hitBattleshipPartData)
         {
-            targetBattleshipPartData.isHit = true;
+            hitBattleshipPartData.isHit = true;
 
-            if (targetBattleshipPartData.battleshipData.IsWrecked)
-            {
-                targetBattleshipPartData.battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
-                displayGameMessage.ShowText(DestroyShipText);
-                AudioManager.Play(AudioManager.instance.sunkTargetSound);
-            }
+            if (hitBattleshipPartData.battleshipData.IsWrecked)
+                DestroyBattleship(hitBattleshipPartData.battleshipData);
 
-            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
-                = (int) BoardData.BoardTileType.Hit;
+            SetMoveBoardAtGridPosition(gridPosition, BoardData.BoardTileType.Hit);
 
             if (OtherPlayer.CheckGameOver())
             {
@@ -91,26 +85,38 @@ public class GameManager : MonoBehaviour
             }
 
             ShakeCamera();
+
             var tileId = battleBoard.tileBoardData.grid[gridPosition.x, gridPosition.y];
             battleBoard.boardTiles[tileId].PlayExplosionParticles();
-            AudioManager.Play(AudioManager.instance.hitTargetSound);
-
-            endTurn = false;
         }
         else
         {
-            ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] 
-                = (int) BoardData.BoardTileType.Miss;
-            AudioManager.Play(AudioManager.instance.missTargetSound);
+            SetMoveBoardAtGridPosition(gridPosition, BoardData.BoardTileType.Miss);
         }
 
         UpdateBoards();
 
-        if (endTurn)
-        {
-            if (endTurnCoroutine != null) StopCoroutine(endTurnCoroutine);
-            StartCoroutine(AdvanceTurnRoutine());
-        }
+        var clipToPlay = hitBattleshipPartData
+            ? AudioManager.instance.hitTargetSound
+            : AudioManager.instance.missTargetSound;
+        AudioManager.Play(clipToPlay);
+
+        if (hitBattleshipPartData) return;
+        
+        if (endTurnCoroutine != null) StopCoroutine(endTurnCoroutine);
+        endTurnCoroutine = StartCoroutine(AdvanceTurnRoutine());
+    }
+
+    private void SetMoveBoardAtGridPosition(Vector2Int gridPosition, BoardData.BoardTileType typeToSet)
+    {
+        ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] = (int) typeToSet;
+    }
+
+    private void DestroyBattleship(BattleshipData battleshipData)
+    {
+        battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
+        displayGameMessage.ShowText(DestroyShipText);
+        AudioManager.Play(AudioManager.instance.sunkTargetSound);
     }
 
     private IEnumerator AdvanceTurnRoutine()
@@ -134,19 +140,9 @@ public class GameManager : MonoBehaviour
     {
         // todo this can be improved by caching battleshipparts
         // instance ids in separate grid + dictionary to access those
-        var opponentBattleships = OtherPlayer.playerBattleshipsData.battleshipsData;
-        foreach (var battleshipData in opponentBattleships)
-        {
-            foreach (var battleshipPart in battleshipData.battleshipParts)
-            {
-                if (battleshipPart.gridPosition == gridPosition)
-                {
-                    return battleshipPart;
-                }
-            }
-        }
-
-        return null;
+        return OtherPlayer.playerBattleshipsData.battleshipsData
+            .SelectMany(battleshipData => battleshipData.battleshipParts)
+            .FirstOrDefault(battleshipPart => battleshipPart.gridPosition == gridPosition);
     }
 
     private void AdvanceTurn()
