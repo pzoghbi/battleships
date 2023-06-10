@@ -1,12 +1,13 @@
 using Cinemachine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] internal BattleshipGameSettings battleSettings;
+    [SerializeField] internal BattleshipGameSettings gameSettings;
     [SerializeField] internal PlayerBoard playerBoard;
     [SerializeField] internal Board battleBoard;
 
@@ -48,6 +49,9 @@ public class GameManager : MonoBehaviour
         InitializePlayers();
         AdvanceTurn();
         AudioManager.Play(AudioManager.instance.music);
+
+        //ReplayData replayData = new ReplayData(gameSettings, playersData.ToList());
+        //replayData.SaveToFile();
     }
 
     private void InitializePlayers()

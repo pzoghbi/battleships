@@ -34,7 +34,7 @@ public class BattleshipData : ScriptableObject
 
         for (byte i = 0; i < size; i++)
         {
-            var battleshipPart = CreateInstance<BattleshipPartData>();
+            var battleshipPart = new BattleshipPartData();
             battleshipPart.battleshipData = this;
             battleshipParts.Add(battleshipPart);
         }
