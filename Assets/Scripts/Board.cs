@@ -12,7 +12,7 @@ public class Board : MonoBehaviour
 
     internal void Awake()
     {
-        tileBoardData = ScriptableObject.CreateInstance<BoardData>();
+        tileBoardData = new BoardData();
         CreateAndPlaceTilesOnGrid();
     }
 

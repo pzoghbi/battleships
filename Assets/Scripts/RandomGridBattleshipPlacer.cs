@@ -14,7 +14,7 @@ public static class RandomGridBattleshipPlacer
         {
             if (abstractBoard == null)
             {
-                abstractBoard = ScriptableObject.CreateInstance<BoardData>();
+                abstractBoard = new BoardData();
             }
             else
             {

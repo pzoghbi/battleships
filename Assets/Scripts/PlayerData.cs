@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[Serializable]
 public class PlayerData : ScriptableObject
 {
     internal BoardData playerMovesData;
@@ -11,7 +13,7 @@ public class PlayerData : ScriptableObject
         // create ships
         playerBattleshipsData = CreateInstance<PlayerBattleshipsData>();
         // initialize move board
-        playerMovesData = CreateInstance<BoardData>();
+        playerMovesData = new BoardData();
     }
 
     internal bool CheckGameOver()
