@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] internal BattleshipGameSettings gameSettings;
+    [SerializeField] internal BattleshipGameSettingsSO gameSettings;
     [SerializeField] internal PlayerBoard playerBoard;
     [SerializeField] internal Board battleBoard;
 
