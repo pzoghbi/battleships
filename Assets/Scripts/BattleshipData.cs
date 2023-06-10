@@ -1,43 +1,31 @@
 using System.Collections.Generic;
 using System.Linq;
-using static BoardData;
 using UnityEngine;
+using static BoardData;
 
-[CreateAssetMenu(fileName = "New Battleship", menuName = "Battleships/New battleship")]
-public class BattleshipData : ScriptableObject
+public class BattleshipData
 {
-    [SerializeField] public Battleship prefab;
-    [SerializeField] internal byte gridWidth;
-    [SerializeField] internal byte gridHeight;
-
-    internal Vector2Int gridPosition;
+    internal Battleship prefab;
     internal List<BattleshipPartData> battleshipParts = new List<BattleshipPartData>();
+    internal Vector2Int gridPosition;
+    internal byte gridWidth;
+    internal byte gridHeight;
+    internal bool IsWrecked => battleshipParts.All(part => part.isHit);
     internal bool isFlipped = false;
 
-    internal bool IsWrecked => battleshipParts.All(battleshippart => battleshippart.isHit);
-
-    public void Flip()
+    public BattleshipData(BattleshipDataSO blueprint)
     {
-        (gridWidth, gridHeight) = (gridHeight, gridWidth);
-        isFlipped = !isFlipped;
-    }
+        this.gridWidth = blueprint.gridWidth;
+        this.gridHeight = blueprint.gridHeight;
+        this.prefab = blueprint.prefab;
 
-    private void Awake()
-    {
         CreateBattleshipParts();
     }
 
-    private void CreateBattleshipParts()
+    internal void Flip()
     {
-        battleshipParts.Clear();
-        var size = gridWidth * gridHeight;
-
-        for (byte i = 0; i < size; i++)
-        {
-            var battleshipPart = new BattleshipPartData();
-            battleshipPart.battleshipData = this;
-            battleshipParts.Add(battleshipPart);
-        }
+        (gridWidth, gridHeight) = (gridHeight, gridWidth);
+        isFlipped = !isFlipped;
     }
 
     internal void RevealBattleshipData(BoardData boardData)
@@ -59,4 +47,18 @@ public class BattleshipData : ScriptableObject
                         boardData.grid[col, row] = flagTileType;
         }
     }
+
+    private void CreateBattleshipParts()
+    {
+        battleshipParts.Clear();
+        var size = gridWidth * gridHeight;
+
+        for (byte i = 0; i < size; i++)
+        {
+            var battleshipPart = new BattleshipPartData();
+            battleshipPart.battleshipData = this;
+            battleshipParts.Add(battleshipPart);
+        }
+    }
+
 }

@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         playersData = new PlayerData[playerCount];
 
         for (byte playerIndex = 0; playerIndex < playerCount; playerIndex++)
-            playersData[playerIndex] = ScriptableObject.CreateInstance<PlayerData>();
+            playersData[playerIndex] = new PlayerData();
     }
 
     public void ProcessPlayerAction(IPlayerAction playerAction)

@@ -2,12 +2,12 @@
 using System.Linq;
 using UnityEngine;
 
-public class PlayerBattleshipsData : ScriptableObject
+public class PlayerBattleshipsData
 {
     internal List<BattleshipData> battleshipsData = new List<BattleshipData>();
     internal bool HasBattleshipsLeft => battleshipsData.Any(battleship => !battleship.IsWrecked);
 
-    private void Awake()
+    public PlayerBattleshipsData()
     {
         CreateBattleships();
         RandomGridBattleshipPlacer.RandomlyArrangeBattleships(battleshipsData);
@@ -15,11 +15,10 @@ public class PlayerBattleshipsData : ScriptableObject
 
     private void CreateBattleships()
     {
-        foreach (var blueprint in GameManager.instance.battleSettings.battleshipsBlueprintData)
+        foreach (var blueprint in GameManager.instance.gameSettings.battleshipsBlueprintData)
         {
-            var newBattleshipData = Instantiate(blueprint);
+            var newBattleshipData = new BattleshipData(blueprint);
             battleshipsData.Add(newBattleshipData);
         }
     }
-
 }

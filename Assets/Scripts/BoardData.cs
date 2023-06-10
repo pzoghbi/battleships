@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BoardData : ScriptableObject
+public class BoardData
 {
     internal const byte boardSize = 10;
 
@@ -15,15 +15,9 @@ public class BoardData : ScriptableObject
         Flag
     }
 
-    private void Awake()
+    public BoardData()
     {
-        InitializeBoard();
-    }
-
-    internal void InitializeBoard()
-    {
-        grid = new int[boardSize, boardSize];
-
+        this.grid = new int[boardSize, boardSize];
         ClearBoard();
     }
 

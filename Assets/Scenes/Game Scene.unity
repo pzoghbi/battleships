@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8485118583e5217459077b06757d14ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleSettings: {fileID: 11400000, guid: 691b1b8d93be2db438e08601c8f6b754, type: 2}
+  gameSettings: {fileID: 11400000, guid: 691b1b8d93be2db438e08601c8f6b754, type: 2}
   playerBoard: {fileID: 2019692379}
   battleBoard: {fileID: 359917011}
   displayGameMessage: {fileID: 1375682804}
@@ -1195,7 +1195,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1467086876}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5923bf02338f7064d85e1ec067981da5, type: 3}
+  m_Script: {fileID: 11500000, guid: 80f90facbc114c54793831de6ca24b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hitTargetSound: {fileID: 8300000, guid: be033bba36ccab74fa57a6df66aecf76, type: 3}

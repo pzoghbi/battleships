@@ -14,7 +14,7 @@ public class PlayerBoard : Board
 
     private void CreateBattleships()
     {
-        GameManager.instance.battleSettings.battleshipsBlueprintData.ForEach(battleshipData =>
+        GameManager.instance.gameSettings.battleshipsBlueprintData.ForEach(battleshipData =>
         {
             var battleship = Instantiate(battleshipData.prefab, boardRoot);
             battleship.prefab = battleshipData.prefab;

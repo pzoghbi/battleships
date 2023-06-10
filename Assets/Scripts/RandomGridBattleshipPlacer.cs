@@ -55,7 +55,7 @@ public static class RandomGridBattleshipPlacer
         if (freePoints.Length > 0)
         {
             Vector2Int randomPointOnGrid = freePoints[Random.Range(0, freePoints.Length)];
-            battleshipData.gridPosition = new Vector2Int((byte) randomPointOnGrid.x, (byte) randomPointOnGrid.y);
+            battleshipData.gridPosition = new Vector2Int(randomPointOnGrid.x, randomPointOnGrid.y);
             PlaceBattleshipPartsOnGrid(battleshipData, (byte) randomPointOnGrid.x, (byte) randomPointOnGrid.y);
             return true;
         }

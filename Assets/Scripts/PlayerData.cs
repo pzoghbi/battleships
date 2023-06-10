@@ -2,17 +2,15 @@
 using UnityEngine;
 
 [Serializable]
-public class PlayerData : ScriptableObject
+public class PlayerData
 {
     internal BoardData playerMovesData;
     internal PlayerBattleshipsData playerBattleshipsData;
     internal uint score = 0;
 
-    private void Awake()
+    public PlayerData()
     {
-        // create ships
-        playerBattleshipsData = CreateInstance<PlayerBattleshipsData>();
-        // initialize move board
+        playerBattleshipsData = new PlayerBattleshipsData();
         playerMovesData = new BoardData();
     }
 

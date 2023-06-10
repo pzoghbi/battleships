@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99059baae25461847943ee1bdd397cab, type: 3}
-  m_Name: New Battleship Settings
+  m_Name: Default Game Settings
   m_EditorClassIdentifier: 
   battleshipsBlueprintData:
   - {fileID: 11400000, guid: 2817980e2f5c26243b7d22f82d66b59d, type: 2}

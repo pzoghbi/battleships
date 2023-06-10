@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a01c25035d6fdc242a663c9e37d9e134, type: 3}
+  m_Script: {fileID: 11500000, guid: 86276e5e8c335db4fae8ca35d96fabcc, type: 3}
   m_Name: 1x1
   m_EditorClassIdentifier: 
   prefab: {fileID: -3348992397308055445, guid: 49c910030cfce554fbd39dee6eb5349c, type: 3}
-  shipParts: []
-  gridPosition: {x: 0, y: 0}
   gridWidth: 1
   gridHeight: 1
-  isFlipped: 0
