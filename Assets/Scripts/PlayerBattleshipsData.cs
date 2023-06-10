@@ -15,7 +15,7 @@ public class PlayerBattleshipsData : ScriptableObject
 
     private void CreateBattleships()
     {
-        foreach (var blueprint in BattleManager.instance.battleSettings.battleshipsBlueprintData)
+        foreach (var blueprint in GameManager.instance.battleSettings.battleshipsBlueprintData)
         {
             var newBattleshipData = Instantiate(blueprint);
             battleshipsData.Add(newBattleshipData);

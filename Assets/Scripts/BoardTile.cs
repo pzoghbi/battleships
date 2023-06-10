@@ -58,7 +58,7 @@ public class BoardTile : MonoBehaviour
     {
         if (!interactable 
             || !IsClickableTileType()
-            || !BattleManager.instance.AllowInput
+            || !GameManager.instance.AllowInput
             ) return;
 
         meshRenderer.material = highlightMaterial;
@@ -89,7 +89,7 @@ public class BoardTile : MonoBehaviour
         if (IsClickableTileType())
         {
             var playerAction = new GridSelectionPlayerAction(gridPosition);
-            BattleManager.instance.ProcessPlayerAction(playerAction);
+            GameManager.instance.ProcessPlayerAction(playerAction);
         }
     }
 

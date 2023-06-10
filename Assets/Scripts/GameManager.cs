@@ -3,13 +3,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public partial class BattleManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField] internal BattleshipGameSettings battleSettings;
     [SerializeField] internal PlayerBoard playerBoard;
     [SerializeField] internal Board battleBoard;
 
-    internal static BattleManager instance;
+    internal static GameManager instance;
     internal int turn = 0;
     internal bool isGameOver = false;
     internal bool AllowInput {

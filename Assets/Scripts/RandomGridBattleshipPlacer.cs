@@ -40,7 +40,7 @@ public static class RandomGridBattleshipPlacer
                 if (!TryPlaceBattleshipOnGrid(battleshipData))
                 {
                     Debug.LogError("Ship cannot be placed.. restarting");
-                    BattleManager.instance.RestartBattle();
+                    GameManager.instance.RestartBattle();
                 }
             }
         });

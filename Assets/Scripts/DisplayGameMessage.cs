@@ -39,7 +39,7 @@ public class DisplayGameMessage : MonoBehaviour
 
         yield return ShiftScaleRoutine(1, maxScale, 1, EaseOut);
 
-        if (BattleManager.instance.isGameOver) yield break;
+        if (GameManager.instance.isGameOver) yield break;
 
         yield return new WaitForSecondsRealtime(showForSeconds);
 

@@ -12,6 +12,6 @@ public class GridSelectionPlayerAction : PlayerAction
 
     public override void Execute()
     {
-        BattleManager.instance.ProcessTileSelection(gridPosition);
+        GameManager.instance.ProcessTileSelection(gridPosition);
     }
 }
