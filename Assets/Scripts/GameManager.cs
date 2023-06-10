@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
 
     private CinemachineImpulseSource impulseSource;
     private Coroutine endTurnCoroutine;
-    private PlayerData[] players;
-    private PlayerData ActivePlayer => players[(turn + 1) % playerCount];
-    private PlayerData OtherPlayer => players[turn % playerCount];
+    private PlayerData[] playersData;
+    private PlayerData ActivePlayerData => playersData[(turn + 1) % playerCount];
+    private PlayerData OtherPlayerData => playersData[turn % playerCount];
     private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
     private string WinText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
     private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
@@ -52,10 +52,10 @@ public class GameManager : MonoBehaviour
 
     private void InitializePlayers()
     {
-        players = new PlayerData[playerCount];
+        playersData = new PlayerData[playerCount];
 
         for (byte playerIndex = 0; playerIndex < playerCount; playerIndex++)
-            players[playerIndex] = ScriptableObject.CreateInstance<PlayerData>();
+            playersData[playerIndex] = ScriptableObject.CreateInstance<PlayerData>();
     }
 
     public void ProcessPlayerAction(IPlayerAction playerAction)
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
 
             SetMoveBoardAtGridPosition(gridPosition, BoardData.BoardTileType.Hit);
 
-            if (OtherPlayer.CheckGameOver())
+            if (OtherPlayerData.CheckGameOver())
             {
                 isGameOver = true;
                 StartCoroutine(GameOverRoutine());
@@ -109,12 +109,12 @@ public class GameManager : MonoBehaviour
 
     private void SetMoveBoardAtGridPosition(Vector2Int gridPosition, BoardData.BoardTileType typeToSet)
     {
-        ActivePlayer.playerMovesData.grid[gridPosition.x, gridPosition.y] = (int) typeToSet;
+        ActivePlayerData.playerMovesData.grid[gridPosition.x, gridPosition.y] = (int) typeToSet;
     }
 
     private void DestroyBattleship(BattleshipData battleshipData)
     {
-        battleshipData.RevealBattleshipData(ActivePlayer.playerMovesData);
+        battleshipData.RevealBattleshipData(ActivePlayerData.playerMovesData);
         displayGameMessage.ShowText(DestroyShipText);
         AudioManager.Play(AudioManager.instance.sunkTargetSound);
     }
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
     {
         // todo this can be improved by caching battleshipparts
         // instance ids in separate grid + dictionary to access those
-        return OtherPlayer.playerBattleshipsData.battleshipsData
+        return OtherPlayerData.playerBattleshipsData.battleshipsData
             .SelectMany(battleshipData => battleshipData.battleshipParts)
             .FirstOrDefault(battleshipPart => battleshipPart.gridPosition == gridPosition);
     }
@@ -156,10 +156,10 @@ public class GameManager : MonoBehaviour
     private void UpdateBoards()
     {
         // show my ships and opponent's moves
-        playerBoard.LoadBoardData(OtherPlayer.playerMovesData, ActivePlayer.playerBattleshipsData);
+        playerBoard.LoadBoardData(OtherPlayerData.playerMovesData, ActivePlayerData.playerBattleshipsData);
 
         // show my moves on the interactable board
-        battleBoard.LoadBoardData(ActivePlayer.playerMovesData);
+        battleBoard.LoadBoardData(ActivePlayerData.playerMovesData);
     }
 
     internal void RestartBattle()
