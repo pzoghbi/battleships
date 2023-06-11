@@ -241,7 +241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &359917008
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -444,28 +444,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 639710636}
-  - component: {fileID: 639710635}
+  - component: {fileID: 639710637}
   m_Layer: 0
-  m_Name: Replay Recorder
+  m_Name: Replay Player
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &639710635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 639710634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2db48c6c9d1df149bcb57873548fbcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recordGameplay: 1
-  gameManager: {fileID: 1467086877}
 --- !u!4 &639710636
 Transform:
   m_ObjectHideFlags: 0
@@ -481,6 +467,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &639710637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639710634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b34cf02f786354a852d942b0dae2ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,7 +1041,7 @@ GameObject:
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1467086877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1059,7 +1057,7 @@ MonoBehaviour:
   gameSettings: {fileID: 11400000, guid: 691b1b8d93be2db438e08601c8f6b754, type: 2}
   playerBoard: {fileID: 2019692379}
   battleBoard: {fileID: 359917011}
-  replayRecorder: {fileID: 639710635}
+  replayRecorder: {fileID: 0}
   displayGameMessage: {fileID: 1375682804}
   destroyShipTexts:
   - Wrecked!
@@ -1314,7 +1312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &2019692376
 MeshRenderer:
   m_ObjectHideFlags: 0

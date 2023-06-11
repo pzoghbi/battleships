@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,24 @@ public class BattleshipData
 {
     [NonSerialized] public Battleship prefab;
     [NonSerialized] public Vector2Int gridPosition;
+    [JsonProperty(PropertyName = "gridPosition")]
     public SerializableVector2Int GridPosition => new SerializableVector2Int(gridPosition.x, gridPosition.y);
     public List<BattleshipPartData> battleshipParts = new List<BattleshipPartData>();
     public byte gridWidth;
     public byte gridHeight;
     public bool IsWrecked => battleshipParts.All(part => part.isHit);
     public bool isFlipped = false;
+
+    [JsonConstructor]
+    public BattleshipData(byte gridWidth, byte gridHeight, bool isFlipped, SerializableVector2Int gridPosition)
+    {
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        this.gridPosition = new Vector2Int(gridPosition.x, gridPosition.y);
+        this.isFlipped = isFlipped;
+
+        CreateBattleshipParts();
+    }
 
     public BattleshipData(BattleshipDataSO blueprint)
     {

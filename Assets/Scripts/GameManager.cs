@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         private set => allowInput = value;
     }
 
-    [SerializeField] private ReplayRecorder recorder;
+    [SerializeField] private ReplayRecorder replayRecorder;
     [SerializeField] private DisplayGameMessage displayGameMessage;
     [SerializeField] private string[] destroyShipTexts;
 
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
     public void ProcessPlayerAction(IPlayerAction playerAction)
     {
         playerAction.Execute();
-        recorder?.PlayerActionComplete?.Invoke(playerAction);
+        replayRecorder?.PlayerActionComplete?.Invoke(playerAction);
     }
     
     internal async void ProcessTileSelection(Vector2Int gridPosition)
@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
             {
                 isGameOver = true;
                 StartCoroutine(GameOverRoutine());
-                if (recorder.recordGameplay) await Task.Run(async () => await recorder.SaveReplay());
+                if (replayRecorder.recordGameplay) await Task.Run(async () => await replayRecorder.SaveReplay());
             }
 
             ShakeCamera();

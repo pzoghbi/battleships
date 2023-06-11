@@ -3,8 +3,8 @@
 [Serializable]
 public struct SerializableVector2Int
 {
-    private int x;
-    private int y;
+    public int x;
+    public int y;
 
     public SerializableVector2Int(int x, int y)
     {

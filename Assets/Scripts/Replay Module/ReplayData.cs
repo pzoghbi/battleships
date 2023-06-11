@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,11 +10,19 @@ public class ReplayData : IReplayData
     //internal BattleshipGameSettings gameSettings;
     public List<IReplayStateData> staticData;   // player data
     public List<IReplayStateData> stateHistory = new List<IReplayStateData>(); // board states
+
     private static readonly string directoryPath = Application.persistentDataPath;
     private static DirectoryInfo dir = new DirectoryInfo(directoryPath);
-    private string NewFileName => $"replay{dir.GetFiles().Length}";
-    private string FilePath => directoryPath + $"/{NewFileName}.{newFileExtension}";
+    private string NewFileName => $"replay{dir.GetFiles().Length}"; // todo improve naming algo
+    private string FilePath => directoryPath + $"/{NewFileName}.{newFileExtension}"; 
     private const string newFileExtension = "json";
+    private static JsonSerializerSettings settings = 
+        new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+
+    public ReplayData()
+    {
+        staticData = new List<IReplayStateData>();
+    }
 
     public ReplayData(List<IReplayStateData> playersData)
     {
@@ -25,17 +34,37 @@ public class ReplayData : IReplayData
         => stateToUpdate.Add(stateData);
 
     public async Task<bool> SaveToFile()
-    {        
-        return await Task.Run(async () => {
+    {
+        return await Task.Run(async () =>
+        {
             try
             {
-                var json = JsonConvert.SerializeObject(this);
+                var json = JsonConvert.SerializeObject(this, settings);
                 await File.WriteAllTextAsync(FilePath, json);
                 return true;
-            } catch
+            }
+            catch (Exception e)
             {
+                Debug.LogError(e);
                 return false;
             }
         });
+    }
+
+    public static ReplayData LoadLastReplayFile()
+    {
+        try
+        {
+            var dirFiles = dir.GetFiles();
+            var lastFileIndex = dirFiles.Length - 1;
+            var file = File.ReadAllText(dirFiles[lastFileIndex].FullName);
+            var instance = JsonConvert.DeserializeObject<ReplayData>(file, settings);
+            return instance;
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e);
+            return null;
+        }
     }
 }
