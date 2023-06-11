@@ -9,9 +9,7 @@ using static BoardData;
 public class BattleshipData
 {
     [NonSerialized] public Battleship prefab;
-    [NonSerialized] public Vector2Int gridPosition;
-    [JsonProperty(PropertyName = "gridPosition")]
-    public SerializableVector2Int GridPosition => new SerializableVector2Int(gridPosition.x, gridPosition.y);
+    public SerializableVector2Int gridPosition;
     public List<BattleshipPartData> battleshipParts = new List<BattleshipPartData>();
     public byte gridWidth;
     public byte gridHeight;
@@ -34,6 +32,7 @@ public class BattleshipData
         this.gridWidth = blueprint.gridWidth;
         this.gridHeight = blueprint.gridHeight;
         this.prefab = blueprint.prefab;
+
 
         CreateBattleshipParts();
     }

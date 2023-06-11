@@ -72,7 +72,7 @@ public static class RandomGridBattleshipPlacer
             for (byte i = startCol; i < startCol + battleshipData.gridWidth; i++)
             {
                 var battleshipPart = battleshipData.battleshipParts[partIndex++];
-                battleshipPart.gridPosition = new Vector2Int(i, j);
+                battleshipPart.gridPosition = new SerializableVector2Int(i, j);
 
                 // mark this part of the grid as occupied
                 abstractBoard.grid[i, j] = (int) BoardTileType.Ship;
