@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class PlayerBattleshipsData
 {
-    internal List<BattleshipData> battleshipsData = new List<BattleshipData>();
-    internal bool HasBattleshipsLeft => battleshipsData.Any(battleship => !battleship.IsWrecked);
+    public List<BattleshipData> battleshipsData = new List<BattleshipData>();
+    public bool HasBattleshipsLeft => battleshipsData.Any(battleship => !battleship.IsWrecked);
 
-    public PlayerBattleshipsData()
+    public PlayerBattleshipsData(BattleshipGameSettingsSO gameSettings)
     {
-        CreateBattleships();
+        CreateBattleships(gameSettings.battleshipsBlueprintData);
         RandomGridBattleshipPlacer.RandomlyArrangeBattleships(battleshipsData);
     }
 
-    private void CreateBattleships()
+    private void CreateBattleships(List<BattleshipDataSO> blueprints)
     {
-        foreach (var blueprint in GameManager.instance.gameSettings.battleshipsBlueprintData)
+        foreach (var blueprint in blueprints)
         {
             var newBattleshipData = new BattleshipData(blueprint);
             battleshipsData.Add(newBattleshipData);

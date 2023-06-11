@@ -18,6 +18,7 @@ public class BoardTile : MonoBehaviour
         }
     }
 
+    private bool Interactable => interactable && IsClickableTileType() && GameManager.instance.AllowInput;
     internal bool interactable = false;
 
     [Header("Materials")]
@@ -56,24 +57,21 @@ public class BoardTile : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (!interactable 
-            || !IsClickableTileType()
-            || !GameManager.instance.AllowInput
-            ) return;
+        if (!Interactable) return;
 
         meshRenderer.material = highlightMaterial;
     }
 
     private void OnMouseExit()
     {
-        if (!interactable) return;
+        if (!Interactable) return;
 
         meshRenderer.material = currentMaterial;
     }
 
     private void OnMouseUp()
     {
-        if (!interactable) return;
+        if (!Interactable) return;
 
         PropagateClick(gridPosition);
     }
@@ -86,11 +84,8 @@ public class BoardTile : MonoBehaviour
 
     private void PropagateClick(Vector2Int gridPosition)
     {
-        if (IsClickableTileType())
-        {
-            var playerAction = new GridSelectionPlayerAction(gridPosition);
-            GameManager.instance.ProcessPlayerAction(playerAction);
-        }
+        var playerAction = new GridSelectionPlayerAction(gridPosition);
+        GameManager.instance.ProcessPlayerAction(playerAction);
     }
 
     private bool IsClickableTileType()

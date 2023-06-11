@@ -21,6 +21,12 @@ public class AudioManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         audioSource.Play();
     }
+    
+    private void Start()
+    {
+        if (!audioSource.isPlaying)
+            Play(music);
+    }
 
     internal static void Play(AudioClip clip)
     {

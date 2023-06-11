@@ -2,15 +2,15 @@
 using UnityEngine;
 
 [Serializable]
-public class PlayerData
+public class PlayerData : IReplayStateData
 {
-    internal BoardData playerMovesData;
-    internal PlayerBattleshipsData playerBattleshipsData;
-    internal uint score = 0;
+    public BoardData playerMovesData;
+    public PlayerBattleshipsData playerBattleshipsData;
+    public uint score = 0;
 
-    public PlayerData()
+    public PlayerData(BattleshipGameSettingsSO gameSettings)
     {
-        playerBattleshipsData = new PlayerBattleshipsData();
+        playerBattleshipsData = new PlayerBattleshipsData(gameSettings);
         playerMovesData = new BoardData();
     }
 
@@ -23,4 +23,6 @@ public class PlayerData
     {
         score += scoreToAdd;
     }
+
+    public string typeName => GetType().Name;
 }

@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class BoardData
+[Serializable]
+public class BoardData : IReplayStateData
 {
-    internal const byte boardSize = 10;
+    public const byte boardSize = 10;
+    public int[,] grid;
 
-    internal int[,] grid;
-    internal enum BoardTileType : byte
+    public enum BoardTileType : byte
     {
         Empty,
         Ship,
@@ -46,4 +48,6 @@ public class BoardData
     {
         return (byte) Mathf.Clamp(value, 0, boardSize - 1);
     }
+
+    public string typeName => GetType().Name;
 }

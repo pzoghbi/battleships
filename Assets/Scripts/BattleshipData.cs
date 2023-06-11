@@ -1,17 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static BoardData;
 
+[Serializable]
 public class BattleshipData
 {
-    internal Battleship prefab;
-    internal List<BattleshipPartData> battleshipParts = new List<BattleshipPartData>();
-    internal Vector2Int gridPosition;
-    internal byte gridWidth;
-    internal byte gridHeight;
-    internal bool IsWrecked => battleshipParts.All(part => part.isHit);
-    internal bool isFlipped = false;
+    [NonSerialized] public Battleship prefab;
+    [NonSerialized] public Vector2Int gridPosition;
+    public SerializableVector2Int GridPosition => new SerializableVector2Int(gridPosition.x, gridPosition.y);
+    public List<BattleshipPartData> battleshipParts = new List<BattleshipPartData>();
+    public byte gridWidth;
+    public byte gridHeight;
+    public bool IsWrecked => battleshipParts.All(part => part.isHit);
+    public bool isFlipped = false;
 
     public BattleshipData(BattleshipDataSO blueprint)
     {

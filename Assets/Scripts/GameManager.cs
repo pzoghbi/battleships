@@ -2,7 +2,9 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -12,21 +14,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] internal Board battleBoard;
 
     internal static GameManager instance;
-    internal int turn = 0;
+    internal uint turn = 0;
+    internal uint absoluteTurn = 0;
     internal bool isGameOver = false;
+    internal PlayerData ActivePlayerData => playersData[(turn + 1) % playerCount];
+    internal PlayerData OtherPlayerData => playersData[turn % playerCount];
     internal bool AllowInput {
         get => !isGameOver && allowInput;
         private set => allowInput = value;
     }
 
+    [SerializeField] private ReplayRecorder recorder;
     [SerializeField] private DisplayGameMessage displayGameMessage;
     [SerializeField] private string[] destroyShipTexts;
 
     private CinemachineImpulseSource impulseSource;
     private Coroutine endTurnCoroutine;
     private PlayerData[] playersData;
-    private PlayerData ActivePlayerData => playersData[(turn + 1) % playerCount];
-    private PlayerData OtherPlayerData => playersData[turn % playerCount];
     private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
     private string WinText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
     private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
@@ -40,18 +44,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        instance = this;
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        instance = this;
+        InitializePlayers();
     }
 
     private void Start()
     {
-        InitializePlayers();
         AdvanceTurn();
-        AudioManager.Play(AudioManager.instance.music);
-
-        //ReplayData replayData = new ReplayData(gameSettings, playersData.ToList());
-        //replayData.SaveToFile();
     }
 
     private void InitializePlayers()
@@ -59,15 +59,16 @@ public class GameManager : MonoBehaviour
         playersData = new PlayerData[playerCount];
 
         for (byte playerIndex = 0; playerIndex < playerCount; playerIndex++)
-            playersData[playerIndex] = new PlayerData();
+            playersData[playerIndex] = new PlayerData(gameSettings);
     }
 
     public void ProcessPlayerAction(IPlayerAction playerAction)
     {
         playerAction.Execute();
+        recorder?.PlayerActionComplete?.Invoke(playerAction);
     }
     
-    internal void ProcessTileSelection(Vector2Int gridPosition)
+    internal async void ProcessTileSelection(Vector2Int gridPosition)
     {
         if (!AllowInput) return;
 
@@ -86,6 +87,7 @@ public class GameManager : MonoBehaviour
             {
                 isGameOver = true;
                 StartCoroutine(GameOverRoutine());
+                if (recorder.recordGameplay) await Task.Run(async () => await recorder.SaveReplay());
             }
 
             ShakeCamera();
@@ -104,6 +106,8 @@ public class GameManager : MonoBehaviour
             ? AudioManager.instance.hitTargetSound
             : AudioManager.instance.missTargetSound;
         AudioManager.Play(clipToPlay);
+
+        absoluteTurn += 1;
 
         if (hitBattleshipPartData) return;
         
@@ -170,6 +174,9 @@ public class GameManager : MonoBehaviour
     {
         if (LevelManager.instance)
             LevelManager.instance.LoadMainMenu();
+        else {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     private void ShakeCamera()
