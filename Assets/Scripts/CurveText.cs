@@ -8,6 +8,7 @@ public class CurveText : MonoBehaviour
     private TextMeshProUGUI textMesh;
     private const string titleText = "Battleships";
     private const float yOffsetAmount = .15f;
+    private const float sizeOffsetPercent = 20;
 
     private void Awake()
     {
@@ -24,8 +25,9 @@ public class CurveText : MonoBehaviour
             char character = titleText[i];
             float angle = i * Mathf.PI / titleText.Length;
             float displaceCurve = Mathf.Sin(angle) * yOffsetAmount;
-            string style = $"<voffset={displaceCurve}em>";
-            finalText += style + character + "</voffset>";
+            float size = 100 + Mathf.Sin(angle) * sizeOffsetPercent; 
+            string style = $"<voffset={displaceCurve}em><size={size}%>";
+            finalText += style + character + "</size></voffset>";
         }
 
         textMesh.text = finalText;
