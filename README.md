@@ -21,6 +21,9 @@ i. e. (`Appdata/LocalLow/DefaultCompany/Battleships`)
 It is only injecting the player actions and not reading the entire state.
 Replay module will play the most recent recorded replay. It can be accessed from the main menu.
 
+#### Pausing/Playing on-demand
+At the current state of affairs, it's possible to play/pause replay on demand. Note that if the action has already been processed, it will be passed to the injector, and replay will be paused after the particular action. This might be changed in the future.
+
 #### Partial modularity (WIP)
 Although not fully featured, it is designed with flexibility in mind and could potentially support usage across similar projects in the future
 
