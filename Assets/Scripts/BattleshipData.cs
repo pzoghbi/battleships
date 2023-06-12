@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using static BoardData;
 
@@ -17,14 +18,15 @@ public class BattleshipData
     public bool isFlipped = false;
 
     [JsonConstructor]
-    public BattleshipData(byte gridWidth, byte gridHeight, bool isFlipped, SerializableVector2Int gridPosition)
-    {
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.gridPosition = new Vector2Int(gridPosition.x, gridPosition.y);
-        this.isFlipped = isFlipped;
+    public BattleshipData() { }
 
-        CreateBattleshipParts();
+    [OnDeserialized]
+    public void On(StreamingContext ctx)
+    {
+        foreach(var battleshipPart in battleshipParts) 
+        {
+            battleshipPart.battleshipData = this;    
+        }
     }
 
     public BattleshipData(BattleshipDataSO blueprint)
@@ -33,8 +35,24 @@ public class BattleshipData
         this.gridHeight = blueprint.gridHeight;
         this.prefab = blueprint.prefab;
 
-
         CreateBattleshipParts();
+    }
+
+    // todo move to battleship utility
+    internal void BindBattleshipPrefab()
+    {
+        var settings = GameManager.instance.gameSettings;
+        this.prefab = settings.battleshipsBlueprintData.FirstOrDefault(battleship => {
+            var condition1 = 
+                battleship.gridWidth == this.gridWidth
+                && battleship.gridHeight == this.gridHeight;
+
+            var condition2 =
+                battleship.gridHeight == this.gridWidth
+                && battleship.gridWidth == this.gridHeight;
+
+            return condition1 || condition2;
+        })?.prefab;
     }
 
     internal void Flip()
@@ -43,6 +61,7 @@ public class BattleshipData
         isFlipped = !isFlipped;
     }
 
+    // todo move to battleship utility
     internal void RevealBattleshipData(BoardData boardData)
     {
         var extrude = RandomGridBattleshipPlacer.extrude;

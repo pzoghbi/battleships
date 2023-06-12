@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Profiling;
 
-public class ReplayRecorder : MonoBehaviour
+public class ReplayRecorder : MonoBehaviour, IReplayRecorder
 {
     [SerializeField] internal bool recordGameplay = true;
     [SerializeField] private GameManager gameManager;
@@ -26,6 +26,11 @@ public class ReplayRecorder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerActionComplete += PersistReplayDataCapsule;
+    }
+
+    internal void InitializeReplayData()
+    {
         var playersDataCopy = new List<IReplayStateData> {
             gameManager.ActivePlayerData,
             gameManager.OtherPlayerData
@@ -35,8 +40,6 @@ public class ReplayRecorder : MonoBehaviour
         playersDataCopy = playersDataCopy.DeepCopy();
 
         replayData = new ReplayData(playersDataCopy);
-
-        PlayerActionComplete += PersistReplayDataCapsule;
     }
 
     public void PersistReplayDataCapsule(IPlayerAction playerAction)

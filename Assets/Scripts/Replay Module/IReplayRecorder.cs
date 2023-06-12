@@ -1,5 +1,7 @@
-﻿public interface IReplayRecorder
+﻿using System.Threading.Tasks;
+
+public interface IReplayRecorder
 {
     public void PersistReplayDataCapsule(IPlayerAction action);
-    public bool SaveReplay();
+    public Task<bool> SaveReplay();
 }

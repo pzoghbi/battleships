@@ -14,52 +14,61 @@ public class GameManager : MonoBehaviour
     [SerializeField] internal Board battleBoard;
 
     internal static GameManager instance;
+    internal const byte playerCount = 2;
     internal uint turn = 0;
     internal uint absoluteTurn = 0;
+    internal float delayBetweenTurns = 2;
     internal bool isGameOver = false;
     internal PlayerData ActivePlayerData => playersData[(turn + 1) % playerCount];
     internal PlayerData OtherPlayerData => playersData[turn % playerCount];
     internal bool AllowInput {
         get => !isGameOver && allowInput;
-        private set => allowInput = value;
+        private set => allowInput = value && !ReplayPlayer.isReplaying;
     }
 
+    [SerializeField] private PlayerManager playerManager;
     [SerializeField] private ReplayRecorder replayRecorder;
     [SerializeField] private DisplayGameMessage displayGameMessage;
     [SerializeField] private string[] destroyShipTexts;
+    [SerializeField] private bool allowInput = true;
 
     private CinemachineImpulseSource impulseSource;
     private Coroutine endTurnCoroutine;
     private PlayerData[] playersData;
-    private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
-    private string WinText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
-    private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
-    private float delayBetweenTurns = 2;
     private float gameOverDelay = 2;
     private float restartGameDelay = 3;
     private byte currentPlayerIndex = 0;
-    private const byte playerCount = 2;
-    private bool allowInput = true;
+    private string DestroyShipText => destroyShipTexts[Random.Range(0, destroyShipTexts.Length)] ?? "";
+    private string WinText => "Player " + (currentPlayerIndex + 1).ToString() + " wins";
+    private string TurnText => "Player " + (currentPlayerIndex + 1).ToString() + "'s turn";
 
     // Start is called before the first frame update
     void Awake()
     {
         impulseSource = GetComponent<CinemachineImpulseSource>();
         instance = this;
-        InitializePlayers();
     }
 
     private void Start()
     {
+        playerManager.InitializePlayers(gameSettings);
+        playersData = playerManager.PlayersData;
+        BindBattleshipPrefabs();
+        if (replayRecorder && replayRecorder.recordGameplay) {
+            replayRecorder.InitializeReplayData();
+        }
         AdvanceTurn();
     }
 
-    private void InitializePlayers()
+    internal void BindBattleshipPrefabs()
     {
-        playersData = new PlayerData[playerCount];
-
-        for (byte playerIndex = 0; playerIndex < playerCount; playerIndex++)
-            playersData[playerIndex] = new PlayerData(gameSettings);
+        foreach(var player in playersData)
+        {
+            foreach(var battleshipData in player.playerBattleshipsData.battleshipsData)
+            {
+                battleshipData.BindBattleshipPrefab();
+            }
+        }
     }
 
     public void ProcessPlayerAction(IPlayerAction playerAction)
@@ -70,7 +79,7 @@ public class GameManager : MonoBehaviour
     
     internal async void ProcessTileSelection(Vector2Int gridPosition)
     {
-        if (!AllowInput) return;
+        if (!AllowInput && !ReplayPlayer.isReplaying) return;
 
         var hitBattleshipPartData = CheckForTargetsHit(gridPosition);
 
@@ -87,7 +96,11 @@ public class GameManager : MonoBehaviour
             {
                 isGameOver = true;
                 StartCoroutine(GameOverRoutine());
-                if (replayRecorder.recordGameplay) await Task.Run(async () => await replayRecorder.SaveReplay());
+                if (replayRecorder)
+                {
+                    if (replayRecorder.recordGameplay)
+                        await Task.Run(async () => await replayRecorder.SaveReplay());
+                }
             }
 
             ShakeCamera();
@@ -161,7 +174,7 @@ public class GameManager : MonoBehaviour
         UpdateBoards();
     }
 
-    private void UpdateBoards()
+    internal void UpdateBoards()
     {
         // show my ships and opponent's moves
         playerBoard.LoadBoardData(OtherPlayerData.playerMovesData, ActivePlayerData.playerBattleshipsData);

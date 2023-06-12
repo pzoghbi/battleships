@@ -2,5 +2,5 @@
 
 public interface IReplayStateData
 {
-    public string typeName { get; }
+    public string typeName { get; } // todo remove
 }
