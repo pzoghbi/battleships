@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] private string gameSceneName = "Game Scene";
     [SerializeField] private string mainMenuSceneName = "Main Menu";
+    [SerializeField] private string watchReplaySceneName = "Replay Playback Scene";
     internal static LevelManager instance;
 
     // Start is called before the first frame update
@@ -33,5 +34,10 @@ public class LevelManager : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    public void LoadWatchReplayScene()
+    {
+        SceneManager.LoadScene(watchReplaySceneName);
     }
 }

@@ -7,10 +7,10 @@ using UnityEngine;
 
 public class ReplayData : IReplayData
 {
-    //internal BattleshipGameSettings gameSettings;
+    // todo segregate some of these responsibilities
     public List<IReplayStateData> staticData;   // player data
     public List<IReplayStateData> stateHistory = new List<IReplayStateData>(); // board states
-
+    internal static bool ReplayExists => dir.GetFiles(regexPattern).Length > 0;
     private static readonly string directoryPath = Application.persistentDataPath;
     private static DirectoryInfo dir = new DirectoryInfo(directoryPath);
     private string NewFileName => $"replay{dir.GetFiles().Length}"; // todo improve naming algo
@@ -18,6 +18,7 @@ public class ReplayData : IReplayData
     private const string newFileExtension = "json";
     private static JsonSerializerSettings settings = 
         new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+    private static string regexPattern = "replay*.json";
 
     public ReplayData()
     {

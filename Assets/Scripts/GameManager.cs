@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     internal const byte playerCount = 2;
     internal uint turn = 0;
     internal uint absoluteTurn = 0;
-    internal float delayBetweenTurns = 2;
+    internal readonly float delayBetweenTurns = 2;
     internal bool isGameOver = false;
     internal PlayerData ActivePlayerData => playersData[(turn + 1) % playerCount];
     internal PlayerData OtherPlayerData => playersData[turn % playerCount];
@@ -71,12 +71,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private async void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+
+            await Task.Run(async () => await replayRecorder.SaveReplay());
+        }
+    }
+
+    // todo move to playermanager
     public void ProcessPlayerAction(IPlayerAction playerAction)
     {
         playerAction.Execute();
         replayRecorder?.PlayerActionComplete?.Invoke(playerAction);
     }
-    
+
+    // todo move to playermanager
     internal async void ProcessTileSelection(Vector2Int gridPosition)
     {
         if (!AllowInput && !ReplayPlayer.isReplaying) return;

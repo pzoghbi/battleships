@@ -41,7 +41,7 @@ public class ReplayPlayer : MonoBehaviour
     {
         var maxTurns = stateHistory.Count;
 
-        while (replayTurn <= maxTurns)
+        while (replayTurn < maxTurns)
         {
             if (isPaused)
             {
