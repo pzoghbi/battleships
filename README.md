@@ -23,3 +23,7 @@ Replay module will play the most recent recorded replay. It can be accessed from
 
 #### Partial modularity (WIP)
 Although not fully featured, it is designed with flexibility in mind and could potentially support usage across similar projects in the future
+
+#### Screenshots
+![image](https://github.com/pzoghbi/battleships/assets/10575726/807c0786-e882-4452-8a0e-dbef17a3b178)
+![image](https://github.com/pzoghbi/battleships/assets/10575726/ebad391b-259e-4de4-b304-72617381e666)
