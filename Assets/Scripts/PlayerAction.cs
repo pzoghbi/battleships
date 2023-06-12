@@ -7,6 +7,4 @@ public abstract class PlayerAction : IPlayerAction, IReplayStateData
     {
         GridSelection
     }
-
-    public string typeName => GetType().Name;
 }

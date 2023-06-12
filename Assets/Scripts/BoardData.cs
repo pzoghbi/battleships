@@ -48,6 +48,4 @@ public class BoardData : IReplayStateData
     {
         return (byte) Mathf.Clamp(value, 0, boardSize - 1);
     }
-
-    public string typeName => GetType().Name;
 }

@@ -32,6 +32,4 @@ public class PlayerData : IReplayStateData
     {
         score += scoreToAdd;
     }
-
-    public string typeName => GetType().Name;
 }

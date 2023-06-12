@@ -10,6 +10,4 @@ public class ReplayDataCapsule : IReplayStateData
     public List<IReplayStateData> boardsState;
     public IReplayStateData actionPlayed;
     public float timestamp;
-
-    [JsonIgnore] public string typeName => GetType().Name;
 }
