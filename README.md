@@ -30,3 +30,44 @@ Although not fully featured, it is designed with flexibility in mind and could p
 #### Screenshots
 ![image](https://github.com/pzoghbi/battleships/assets/10575726/807c0786-e882-4452-8a0e-dbef17a3b178)
 ![image](https://github.com/pzoghbi/battleships/assets/10575726/ebad391b-259e-4de4-b304-72617381e666)
+
+---
+# Documentation
+## Replay module
+Replay module consists of various interfaces and classes that implement them. For replay to be successfully recorded and saved to the disk, we rely on [`ReplayData`](https://github.com/pzoghbi/battleships/blob/main/Assets/Scripts/Replay%20Module/ReplayData.cs) class, which implements `IReplayData` interface.
+
+`IReplayData`
+```csharp
+public Task<bool> SaveToFile();
+public void UpdateState(ref List<IReplayStateData> stateToUpdate, IReplayStateData stateData);
+```
+
+`IReplayStateData` Empty abstraction for storing data objects in `ReplayData`.  
+Example: 
+```csharp
+public class PlayerData : IReplayStateData
+{
+    // ... some player data
+}
+```
+
+`IReplayRecorder` (partial modularity) Note: `IPlayerAction` will be abstracted to `IReplayDataCapsule`. Inject a concrete `ReplayDataCapsule` to persist data to the replay state.
+```csharp
+public void PersistReplayDataCapsule(IPlayerAction action);
+public Task<bool> SaveReplay();
+```
+Example implementation (from current version):
+```csharp
+public void PersistReplayDataCapsule(IPlayerAction playerAction) {
+    var replayData = new ReplayData(); // creates an empty static state
+    replayData.staticData = new List<IReplayStateData>() { 
+        /* some stateful data (i. e. player data) */ 
+    }; 
+    var myDataCapsule = new ReplayDataCapsule() 
+    {
+        playerAction = (IReplayStateData) playerAction
+        // ... desired state
+    }
+    replayData.UpdateState(ref replayData.stateHistory, myDataCapsule); // push state
+}
+```
