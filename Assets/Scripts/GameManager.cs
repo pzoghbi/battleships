@@ -71,15 +71,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private async void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-
-            await Task.Run(async () => await replayRecorder.SaveReplay());
-        }
-    }
-
     // todo move to playermanager
     public void ProcessPlayerAction(IPlayerAction playerAction)
     {
