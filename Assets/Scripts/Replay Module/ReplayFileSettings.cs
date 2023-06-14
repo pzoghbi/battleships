@@ -18,6 +18,8 @@ public class ReplayFileSettings
 
     public ReplayFileSettings() { }
 
+    /// <param name="fileName">Prefix for file(s) before DateTime</param>
+    /// <param name="extension">File extension name</param>
     public ReplayFileSettings(string fileName, string extension)
     {
         FileName = fileName;
