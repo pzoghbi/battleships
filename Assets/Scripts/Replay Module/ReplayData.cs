@@ -27,7 +27,8 @@ public class ReplayData : IReplayData
 
     public ReplayData(List<IReplayStateData> playersData)
     {
-        //this.gameSettings = gameSettings; todo decouple gamesettingsSO and data
+        // this.gameSettings = gameSettings; todo decouple gamesettingsSO and data
+        // to save gameSettings in replay to allow more game modes to be replayed
         this.staticData = playersData;
     }
 
