@@ -43,15 +43,15 @@ public class BattleshipData
     {
         var settings = GameManager.instance.gameSettings;
         this.prefab = settings.battleshipsBlueprintData.FirstOrDefault(battleship => {
-            var condition1 = 
+            var gridWidthAndHeightMatch = 
                 battleship.gridWidth == this.gridWidth
                 && battleship.gridHeight == this.gridHeight;
 
-            var condition2 =
+            var gridWidthAndHeightMatchReversed =
                 battleship.gridHeight == this.gridWidth
                 && battleship.gridWidth == this.gridHeight;
 
-            return condition1 || condition2;
+            return gridWidthAndHeightMatch || gridWidthAndHeightMatchReversed;
         })?.prefab;
     }
 
