@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -13,12 +14,13 @@ public class ReplayData : IReplayData
     internal static bool ReplayExists => dir.GetFiles(regexPattern).Length > 0;
     private static readonly string directoryPath = Application.persistentDataPath;
     private static DirectoryInfo dir = new DirectoryInfo(directoryPath);
-    private string NewFileName => $"replay{dir.GetFiles().Length}"; // todo improve naming algo
+    private static FileInfo[] DirFiles => dir.GetFiles(regexPattern);
+    private string NewFileName => $"replay-{Guid.NewGuid()}";
     private string FilePath => directoryPath + $"/{NewFileName}.{newFileExtension}"; 
     private const string newFileExtension = "json";
     private static JsonSerializerSettings settings = 
         new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-    private static string regexPattern = "replay*.json";
+    private static string regexPattern = "replay-*.json";
 
     public ReplayData()
     {
@@ -57,9 +59,8 @@ public class ReplayData : IReplayData
     {
         try
         {
-            var dirFiles = dir.GetFiles();
-            var lastFileIndex = dirFiles.Length - 1;
-            var file = File.ReadAllText(dirFiles[lastFileIndex].FullName);
+            var lastFile = DirFiles.OrderBy(file => file.CreationTimeUtc).Last();
+            var file = File.ReadAllText(lastFile.FullName);
             var instance = JsonConvert.DeserializeObject<ReplayData>(file, settings);
             return instance;
         }
