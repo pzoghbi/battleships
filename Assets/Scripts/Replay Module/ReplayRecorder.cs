@@ -36,7 +36,6 @@ public class ReplayRecorder : MonoBehaviour, IReplayRecorder
             gameManager.ActivePlayerData
         };
 
-        // todo grid position (0, 0)
         playersDataCopy = playersDataCopy.DeepCopy();
 
         replayData = new ReplayData(playersDataCopy);
