@@ -56,7 +56,7 @@ public class ReplayRecorder : MonoBehaviour, IReplayRecorder
             }.DeepCopy()
         };
 
-        replayData.UpdateState(ref replayData.stateHistory, replayStateData);
+        replayData.UpdateState(replayData.stateHistory, replayStateData);
     }
 
     public async Task<bool> SaveReplay()

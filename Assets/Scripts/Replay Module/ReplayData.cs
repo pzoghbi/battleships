@@ -31,7 +31,7 @@ public class ReplayData : IReplayData
         this.staticData = playersData;
     }
 
-    public void UpdateState(ref List<IReplayStateData> stateToUpdate, IReplayStateData stateData)
+    public void UpdateState(List<IReplayStateData> stateToUpdate, IReplayStateData stateData)
         => stateToUpdate.Add(stateData);
 
     public async Task<bool> SaveToFile()
