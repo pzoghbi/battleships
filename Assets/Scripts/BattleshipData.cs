@@ -21,7 +21,7 @@ public class BattleshipData
     public BattleshipData() { }
 
     [OnDeserialized]
-    public void On(StreamingContext ctx)
+    public void OnDeserialized(StreamingContext ctx)
     {
         foreach(var battleshipPart in battleshipParts) 
         {
