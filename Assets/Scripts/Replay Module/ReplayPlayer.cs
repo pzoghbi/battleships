@@ -11,12 +11,11 @@ public class ReplayPlayer : MonoBehaviour
     [SerializeField] private bool playReplay = false;
     internal static bool isReplaying = false;
     internal uint replayTurn = 0;
+    internal ReplayData replayData { get; private set; }
+
+    private ReplayFileManager fileManager = new ReplayFileManager();
     private List<ReplayDataCapsule> stateHistory;
     private bool isPaused = false;
-    internal ReplayData replayData
-    {
-        get; private set;
-    }
 
     private Coroutine playMoveCoroutine;
 
@@ -28,7 +27,8 @@ public class ReplayPlayer : MonoBehaviour
     void Awake()
     {
         isReplaying = playReplay;
-        replayData = ReplayData.LoadLastReplayFile();
+
+        replayData = fileManager.LoadLastReplayFile();
         stateHistory = StateHistoryFromReplay();
     }
 

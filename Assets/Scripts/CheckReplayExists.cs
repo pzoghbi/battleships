@@ -10,6 +10,6 @@ public class CheckReplayExists : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        watchReplayButton.interactable = ReplayData.ReplayExists;
+        watchReplayButton.interactable = new ReplayFileManager().ReplayExists;
     }
 }

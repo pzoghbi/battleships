@@ -38,7 +38,8 @@ public class ReplayRecorder : MonoBehaviour, IReplayRecorder
 
         playersDataCopy = playersDataCopy.DeepCopy();
 
-        replayData = new ReplayData(playersDataCopy);
+        replayData = new ReplayData(new ReplayFileManager());
+        replayData.staticData = playersDataCopy;
     }
 
     public void PersistReplayDataCapsule(IPlayerAction playerAction)
