@@ -44,7 +44,7 @@ Replay module consists of various interfaces and classes that implement them. Fo
 `IReplayData`
 ```csharp
 public Task<bool> SaveToFile();
-public void UpdateState(ref List<IReplayStateData> stateToUpdate, IReplayStateData stateData);
+public void UpdateState(List<IReplayStateData> stateToUpdate, IReplayStateData stateData);
 ```
 
 `IReplayStateData` Empty abstraction for storing data objects in `ReplayData`.  
