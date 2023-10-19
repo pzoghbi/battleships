@@ -9,8 +9,7 @@ public class ReplayFileManager
 {
     internal bool ReplayExists => directoryInfo.GetFiles(regexPattern).Length > 0;
 
-    private static readonly string directoryPath = Application.persistentDataPath;
-    private static DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+    private static DirectoryInfo directoryInfo => FileManager.DirectoryInfo;
 
     private ReplayFileSettings fileSettings = new ReplayFileSettings(); 
     private JsonSerializerSettings serializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
@@ -21,14 +20,14 @@ public class ReplayFileManager
 
     public ReplayFileManager() {
         regexPattern = $"{filePrefix}-*.{fileSettings.Extension}";
-        filePath = directoryPath + $"/{fileSettings.FileName}.{fileSettings.Extension}";
+        filePath = FileManager.DirectoryPath + $"/{fileSettings.FileName}.{fileSettings.Extension}";
     }
 
     public ReplayFileManager(ReplayFileSettings fileSettings)
     {
         this.fileSettings = fileSettings;
         regexPattern = $"{filePrefix}-*.{fileSettings.Extension}";
-        filePath = directoryPath + $"/{fileSettings.FileName}.{fileSettings.Extension}";
+        filePath = FileManager.DirectoryPath + $"/{fileSettings.FileName}.{fileSettings.Extension}";
     }
 
     public async Task<bool> SaveToFile(ReplayData replayData)

@@ -4,10 +4,9 @@ using static BoardData;
 
 public class BoardTile : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem explosionParticles;
+    // Exposed
     internal Vector2Int gridPosition;
 
-    private int tileType = (int) BoardTileType.Empty;
     internal int TileType
     {
         get => tileType;
@@ -18,9 +17,14 @@ public class BoardTile : MonoBehaviour
         }
     }
 
-    private bool Interactable => interactable && IsClickableTileType() && GameManager.instance.AllowInput;
-    internal bool interactable = false;
+    internal bool Interactable 
+    { 
+        get => interactable && IsClickableTileType() && GameManager.instance.AllowInput;
+        set => interactable = value;
+    }
 
+    // Private
+    [SerializeField] private ParticleSystem explosionParticles;
     [Header("Materials")]
     [SerializeField] private Material normalMaterial;
     [SerializeField] private Material highlightMaterial;
@@ -32,6 +36,8 @@ public class BoardTile : MonoBehaviour
 
     private MeshRenderer meshRenderer;
     private static Dictionary<int, Material> materials = new Dictionary<int, Material>();
+    private int tileType = (int) BoardTileType.Empty;
+    private bool interactable = false;
 
     private void Awake()
     {
@@ -55,39 +61,6 @@ public class BoardTile : MonoBehaviour
         transform.localPosition = new Vector3(gridPosition.x, 0, gridPosition.y) + localOffset;
     }
 
-    private void OnMouseOver()
-    {
-        if (!Interactable) return;
-
-        meshRenderer.material = highlightMaterial;
-    }
-
-    private void OnMouseExit()
-    {
-        if (!Interactable) return;
-
-        meshRenderer.material = currentMaterial;
-    }
-
-    private void OnMouseUp()
-    {
-        if (!Interactable) return;
-
-        PropagateClick(gridPosition);
-    }
-
-    internal void UpdateMaterial()
-    {
-        currentMaterial = materials[tileType];
-        meshRenderer.material = currentMaterial;
-    }
-
-    private void PropagateClick(Vector2Int gridPosition)
-    {
-        var playerAction = new GridSelectionPlayerAction(gridPosition);
-        GameManager.instance.ProcessPlayerAction(playerAction);
-    }
-
     private bool IsClickableTileType()
     {
         switch((BoardTileType) tileType)
@@ -102,6 +75,22 @@ public class BoardTile : MonoBehaviour
             default:
                 return false;
         }
+    }
+
+    internal void ResetMaterial() 
+    { 
+        meshRenderer.material = currentMaterial;
+    }
+
+    internal void MarkSelected()
+    {
+        meshRenderer.material = highlightMaterial;
+    }
+
+    internal void UpdateMaterial()
+    {
+        currentMaterial = materials[tileType];
+        meshRenderer.material = currentMaterial;
     }
 
     internal void PlayExplosionParticles()

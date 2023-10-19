@@ -30,7 +30,7 @@ public class Board : MonoBehaviour
         BoardData.WalkGrid((byte col, byte row) =>
         {
             var boardTile = Instantiate(boardTilePrefab, boardRoot);
-            boardTile.interactable = interactable;
+            boardTile.Interactable = interactable;
             boardTile.gridPosition = new Vector2Int(col, row);
 
             int boardTileId = boardTile.GetInstanceID();

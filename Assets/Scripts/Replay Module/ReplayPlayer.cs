@@ -7,21 +7,22 @@ using UnityEngine;
 
 public class ReplayPlayer : MonoBehaviour
 {
-
-    [SerializeField] private bool playReplay = false;
+    // Exposed
     internal static bool isReplaying = false;
     internal uint replayTurn = 0;
     internal ReplayData replayData { get; private set; }
 
+    // Private
+    [SerializeField] private TextMeshProUGUI pauseButtonTextMesh;
+    [SerializeField] private bool playReplay = false;
+    
     private ReplayFileManager fileManager = new ReplayFileManager();
     private List<ReplayDataCapsule> stateHistory;
+    private Coroutine playMoveCoroutine;
     private bool isPaused = false;
 
-    private Coroutine playMoveCoroutine;
+    private string PauseButtonText => isPaused ? "Play" : "Pause";
 
-    [Header("UI")]
-    [SerializeField] TextMeshProUGUI pauseButtonTextMesh;
-    string PauseButtonText => isPaused ? "Play" : "Pause";
 
     // Start is called before the first frame update
     void Awake()
