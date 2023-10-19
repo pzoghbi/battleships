@@ -1,6 +1,11 @@
 # Battleships
 Battleships-2-player-local-with-replay  
 
+```console
+git checkout 7days # (7-day challenge)
+```
+
+
 ### Description:
 A two-player, turn-based game played locally on a 10x10 grid. The game features randomly generated fleets of seven ships in various sizes: two 1x1, two 2x1, one 3x1, one 4x1, and one 5x1. Players take turns selecting coordinates to launch attacks, aiming to sink their opponent's fleet. The first player to sink all of their opponent's ships wins.
 
@@ -39,7 +44,7 @@ Replay module consists of various interfaces and classes that implement them. Fo
 `IReplayData`
 ```csharp
 public Task<bool> SaveToFile();
-public void UpdateState(ref List<IReplayStateData> stateToUpdate, IReplayStateData stateData);
+public void UpdateState(List<IReplayStateData> stateToUpdate, IReplayStateData stateData);
 ```
 
 `IReplayStateData` Empty abstraction for storing data objects in `ReplayData`.  
@@ -68,6 +73,6 @@ public void PersistReplayDataCapsule(IPlayerAction playerAction) {
         playerAction = (IReplayStateData) playerAction
         // ... desired state
     }
-    replayData.UpdateState(ref replayData.stateHistory, myDataCapsule); // push state
+    replayData.UpdateState(replayData.stateHistory, myDataCapsule); // push state
 }
 ```
