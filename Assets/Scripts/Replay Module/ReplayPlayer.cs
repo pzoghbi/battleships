@@ -7,24 +7,18 @@ using UnityEngine;
 
 public class ReplayPlayer : MonoBehaviour
 {
-    // Exposed
     internal static bool isReplaying = false;
     internal uint replayTurn = 0;
-    internal ReplayData replayData { get; private set; }
 
-    // Private
     [SerializeField] private TextMeshProUGUI pauseButtonTextMesh;
     [SerializeField] private bool playReplay = false;
-    
     private ReplayFileManager fileManager = new ReplayFileManager();
     private List<ReplayDataCapsule> stateHistory;
-    private Coroutine playMoveCoroutine;
     private bool isPaused = false;
 
+    internal ReplayData replayData { get; private set; }
     private string PauseButtonText => isPaused ? "Play" : "Pause";
 
-
-    // Start is called before the first frame update
     void Awake()
     {
         isReplaying = playReplay;
@@ -35,7 +29,7 @@ public class ReplayPlayer : MonoBehaviour
 
     private void Start()
     {
-        playMoveCoroutine = StartCoroutine(PlayMove());
+        StartCoroutine(PlayMove());
     }
 
     private IEnumerator PlayMove()
@@ -44,20 +38,14 @@ public class ReplayPlayer : MonoBehaviour
 
         while (replayTurn < maxTurns)
         {
-            if (isPaused)
-            {
-                yield return null;
-            } else
-            {
-                yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1);
 
-                var playerAction = GetPlayerAction(replayTurn);
-                GameManager.instance.ProcessPlayerAction(playerAction);
+            var playerAction = GetPlayerAction(replayTurn);
+            GameManager.instance.ProcessPlayerAction(playerAction);
 
-                replayTurn += 1;
+            replayTurn += 1;
 
-                yield return new WaitForSeconds(GameManager.instance.delayBetweenTurns);
-            }
+            yield return new WaitForSeconds(GameManager.instance.delayBetweenTurns);
         }
     }
 
@@ -73,9 +61,23 @@ public class ReplayPlayer : MonoBehaviour
         return (GridSelectionPlayerAction) actionPlayed;
     }
 
+    private void HandleGamePaused()
+    {
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+    }
+
     public void Pause()
     {
         isPaused = !isPaused;
         pauseButtonTextMesh.text = PauseButtonText;
+
+        HandleGamePaused();
     }
 }

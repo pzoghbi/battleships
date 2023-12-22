@@ -479,8 +479,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b34cf02f786354a852d942b0dae2ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playReplay: 1
   pauseButtonTextMesh: {fileID: 1446762792}
+  playReplay: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
