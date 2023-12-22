@@ -15,6 +15,8 @@ public class ReplayPlayer : MonoBehaviour
     private ReplayFileManager fileManager = new ReplayFileManager();
     private List<ReplayDataCapsule> stateHistory;
     private bool isPaused = false;
+    private const float k_PausedTimeScale = 0;
+    private const float k_UnPausedTimeScale = 1;
 
     internal ReplayData replayData { get; private set; }
     private string PauseButtonText => isPaused ? "Play" : "Pause";
@@ -65,11 +67,11 @@ public class ReplayPlayer : MonoBehaviour
     {
         if (isPaused)
         {
-            Time.timeScale = 0;
+            Time.timeScale = k_PausedTimeScale;
         }
         else
         {
-            Time.timeScale = 1;
+            Time.timeScale = k_UnPausedTimeScale;
         }
     }
 
